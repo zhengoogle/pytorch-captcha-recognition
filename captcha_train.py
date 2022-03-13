@@ -1,5 +1,10 @@
 # -*- coding: UTF-8 -*-
+# import os
+# os.environ["CUDA_VISIBLE_DEVICES"] = "0,1"
 import torch
+# device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+# torch.cuda.set_device(0)
+# device = torch.device("cuda:1")
 import torch.nn as nn
 from torch.autograd import Variable
 import my_dataset
@@ -7,11 +12,13 @@ from captcha_cnn_model import CNN
 
 # Hyper Parameters
 num_epochs = 30
-batch_size = 100
+batch_size = 20
 learning_rate = 0.001
 
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
 def main():
-    cnn = CNN()
+    cnn = CNN().to(device)
     cnn.train()
     print('init net')
     criterion = nn.MultiLabelSoftMarginLoss()
@@ -21,8 +28,10 @@ def main():
     train_dataloader = my_dataset.get_train_data_loader()
     for epoch in range(num_epochs):
         for i, (images, labels) in enumerate(train_dataloader):
-            images = Variable(images)
-            labels = Variable(labels.float())
+            # images = Variable(images)
+            # labels = Variable(labels.float())
+            images = Variable(images).to(device)
+            labels = Variable(labels.float()).to(device)
             predict_labels = cnn(images)
             # print(predict_labels.type)
             # print(labels.type)
