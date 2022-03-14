@@ -9,6 +9,8 @@ import torch.nn as nn
 from torch.autograd import Variable
 import my_dataset
 from captcha_cnn_model import CNN
+import datetime
+import utils
 
 # Hyper Parameters
 num_epochs = 30
@@ -18,6 +20,7 @@ learning_rate = 0.001
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 def main():
+    start_time = datetime.datetime.now()
     cnn = CNN().to(device)
     cnn.train()
     print('init net')
@@ -47,6 +50,8 @@ def main():
         print("epoch:", epoch, "step:", i, "loss:", loss.item())
     torch.save(cnn.state_dict(), "./model.pkl")   #current is model.pkl
     print("save last model")
+    end_time = datetime.datetime.now()
+    utils.log_cost(start_time, end_time)
 
 if __name__ == '__main__':
     main()
