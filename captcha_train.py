@@ -14,8 +14,8 @@ import utils
 
 # Hyper Parameters
 num_epochs = 30
-batch_size = 20
-learning_rate = 0.001
+batch_size = 64
+learning_rate = 0.002
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
