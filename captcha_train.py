@@ -15,13 +15,17 @@ import utils
 # Hyper Parameters
 num_epochs = 30
 batch_size = 64
-learning_rate = 0.002
+learning_rate = 0.0005
 
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+use_gpu = True
 
 def main():
     start_time = datetime.datetime.now()
-    cnn = CNN().to(device)
+    if use_gpu:
+        cnn = CNN().to(device)
+    else:
+        cnn = CNN()
     cnn.train()
     print('init net')
     criterion = nn.MultiLabelSoftMarginLoss()
@@ -31,10 +35,12 @@ def main():
     train_dataloader = my_dataset.get_train_data_loader()
     for epoch in range(num_epochs):
         for i, (images, labels) in enumerate(train_dataloader):
-            # images = Variable(images)
-            # labels = Variable(labels.float())
-            images = Variable(images).to(device)
-            labels = Variable(labels.float()).to(device)
+            if use_gpu:
+                images = Variable(images).to(device)
+                labels = Variable(labels.float()).to(device)
+            else:
+                images = Variable(images)
+                labels = Variable(labels.float())
             predict_labels = cnn(images)
             # print(predict_labels.type)
             # print(labels.type)
